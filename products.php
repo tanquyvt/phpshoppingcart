@@ -20,8 +20,11 @@ if($result->num_rows > 0) {
 		echo '<tr>';
 		echo '<td>' . $name . '</td>';
 		echo '<td>' . '$' . $price . '</td>';
-		echo '<td><a href="cart.php?action=add&id=' . $id . '">Add To Cart</a></td>';
+		echo '<td><a href="addtocart.php?action=add&id=' . $id . '">Add To Cart</a></td>';
 		echo '</tr>';
 	}
+	echo '</table>';
 }
+
+print '<a href="cart.php">View Cart</a>';
 ?>

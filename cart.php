@@ -2,40 +2,37 @@
 session_start();
 require_once 'dbconfig.php';
 
-if(isset($_GET['id'])) {
-	$id = $_GET['id'];
-	echo $id;
-	echo "<br/>";
-} else {
-	
+$id = isset($_GET['id']) ? $_GET['id'] : "";
+$action = isset($_GET['action']) ? $_GET['action'] : "";
+
+if(($action == 'remove') && (count($_SESSION['cart']) != 0)) {
+	$_SESSION['cart'] = array_diff($_SESSION['cart'], array($id));
+	header('Location: cart.php');
 }
 
-if(isset($_GET['action'])) {
-	$action = $_GET['action'];
-	echo $action;
-	echo "<br/>";
-} else {
-	$action = 'view';
-	
+if($action == 'empty') {
+	session_destroy();
+	header('Location: cart.php');
 }
 
-if(isset($_SESSION['cart'])) {
-	if($action == 'add') {
-		$_SESSION['cart'][$id] = $id;
+echo '<a href="products.php">Continue Shopping</a>';
+echo '<br/>';
+
+if(isset($_SESSION['cart']) && (count($_SESSION['cart']) != 0)) {
+
+	foreach($_SESSION['cart'] as $id) {
+		echo $id . ' <a href="cart.php?action=remove&id=' . $id . '">Remove</a>';
+		echo "<br/>";
 	}
-	
+
+	echo '<a href="cart.php?action=empty">Empty Cart</a>';
 } else {
-	$_SESSION['cart'] = array();
-	$_SESSION['cart'][0] = $id;
 	
 }
 
-foreach($_SESSION['cart'] as $id) {
-	echo $id . '<a href="cart.php?action=remove&id=' . $id . '">Remove</a>';
-	echo "<br/>";
+if(!isset($_SESSION['cart']) || (count($_SESSION['cart']) == 0)) {
+	echo "Your cart is empty.";
 }
 
-echo '<a href="">Empty Cart</a>';
-//session_destroy();
 
 ?>
