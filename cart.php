@@ -14,25 +14,48 @@ if($action == 'empty') {
 	session_destroy();
 	header('Location: cart.php');
 }
+?>
 
-echo '<a href="products.php">Continue Shopping</a>';
-echo '<br/>';
+<html>
+	<head>
+		<title>Product List</title>
+		<link rel="stylesheet" type="text/css" href="bootstrap.css">
+	</head>
+	<body>
+		<h2>View Cart</h2>
+		<?php
+			echo '<h3><a href="products.php">Continue Shopping</a></h3>';
+			echo '<table class="table">';
 
-if(isset($_SESSION['cart']) && (count($_SESSION['cart']) != 0)) {
+			if(isset($_SESSION['cart']) && (count($_SESSION['cart']) != 0)) {
 
-	foreach($_SESSION['cart'] as $id) {
-		echo $id . ' <a href="cart.php?action=remove&id=' . $id . '">Remove</a>';
-		echo "<br/>";
-	}
-
-	echo '<a href="cart.php?action=empty">Empty Cart</a>';
-} else {
+				foreach($_SESSION['cart'] as $id) {
+					echo '<tr>';
+					echo '<td>' . getName($dbconnect, $id) . '</td>';
+					echo '<td><a href="cart.php?action=remove&id=' . $id . '">Remove</a></td>';
+					echo '</tr>';
+				}
+				echo '</table>';
+				echo '<h3><a href="cart.php?action=empty">Empty Cart</a></h3>';
+			}
+			
+			if(!isset($_SESSION['cart']) || (count($_SESSION['cart']) == 0)) {
+				echo '<h4>';
+				echo "Your cart is empty.";
+				echo '</h4>';
+			}
+			
+			
+		?>
+	</body>
+</html>
 	
-}
-
-if(!isset($_SESSION['cart']) || (count($_SESSION['cart']) == 0)) {
-	echo "Your cart is empty.";
-}
-
-
+<?php
+	function getName($db, $pid) {
+		$query = "SELECT name, price FROM shoppingcart_products WHERE id = '$pid'";
+		$result = $db->query($query);
+		list($name, $price) = $result->fetch_array();
+		
+		return $name;
+	}
 ?>
